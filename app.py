@@ -7,8 +7,7 @@ from sqlalchemy import create_engine, Column, Integer, DateTime, String
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy import URL
 
-load_dotenv()  # подхватываем .env в локальной разработке
-
+load_dotenv()  
 db_url = URL.create(
     drivername="postgresql+psycopg",  
     username=os.getenv("DB_USER"),
@@ -23,13 +22,13 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
 
 
-# --- Модель Visit ---
+
 class Visit(Base):
     __tablename__ = "visits"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     visit_time = Column(DateTime, nullable=False, default=datetime.utcnow)
-    ip_address = Column(String(45), nullable=False)  # 45 симв. хватает для IPv6
+    ip_address = Column(String(45), nullable=False) 
 
 
 # --- Flask-приложение ---
@@ -38,7 +37,6 @@ app = Flask(__name__)
 
 @app.before_request
 def _ensure_tables():
-    # SQLAlchemy сам проверит наличие таблиц и создаст их при первом запросе
     Base.metadata.create_all(bind=engine)
 
 
@@ -65,7 +63,7 @@ def hello():
     return "Hello", 200
 
 
-# --- Создание таблиц при старте приложения ---
+
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)
     app.run(host="0.0.0.0", port=5000)
